@@ -2,34 +2,38 @@
     Private LWconnectString As String = ""
 
     ' Two different presentations for maintenance, but with the same selection criteria
-    Dim srcpt As String = "select RecNo, Strc, RecTime, RecDte, SampNo, PDesc as ItemDesc, PNum as ItemNo, OrdNo, SupName, LoadNo, BolNo " & _
-                        ", TruckWgt, LotNo, FreightCost, Carrier from msgreceipts " & _
+    ReadOnly srcpt As String = "select RecNo, Strc, RecTime, RecDte, SampNo, PDesc as ItemDesc, PNum as ItemNo, OrdNo, SupName, LoadNo, BolNo " &
+                        ", TruckWgt, LotNo, FreightCost, Carrier from msgreceipts " &
                         "where recdte between @datefrom and @dateto and strc = @strc"
-    Dim ssett As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
+    ' 07.27.20 5 new fields at the end (2 calc'd, 3 manual entry) KH
+    ReadOnly ssett As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
                         ", SupSolWgt, SettSolWgt" &
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
+                        ", ButterfatPct as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno and ras.acode='PROT_ASIS_LECO' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_LECO_LIQUID' and rdb.resultpart='mean_avg'" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
     'added new codes for ML
-    Dim ssettml As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
+    '07.27.20 5 new fields at the end (2 calc'd, 3 manual entry) KH
+    ReadOnly ssettml As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
                         ", SupSolWgt, SettSolWgt" &
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
+                        ", ButterfatPct as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname" &
                         " from msgreceipts m" &
-                        " left outer join result ras on ras.sampno=m.sampno and ras.acode='PROT_ASIS_kjeldahl' and ras.resultpart='mean_avg'" &
+                        " left outer join result ras on ras.sampno=m.sampno And ras.acode='PROT_ASIS_kjeldahl' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_kjeldahl' and rdb.resultpart='mean_avg'" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
-    Private tbRcpt As New DataTable
-    Private tbSett As New DataTable
+    Private ReadOnly tbRcpt As New DataTable
+    Private ReadOnly tbSett As New DataTable
 
     ' Internals
     Public Function GetUserName() As String
@@ -51,19 +55,19 @@
         For Each c As Char In p1
             Select Case c
                 Case "'"
-                    escStr = escStr & "''"
+                    escStr &= "''"
                 Case Else
-                    escStr = escStr & c
+                    escStr &= c
             End Select
         Next
         Return escStr
     End Function
-    Sub unfreeze()
+    Sub Unfreeze()
         For Each cc As DataGridViewColumn In Grid.Columns
             cc.Frozen = False
         Next
     End Sub
-    Sub setConnString()
+    Sub SetConnString()
         If rbProduction.Checked Then
             LWconnectString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=labworks;Server=MILK8"
         Else
@@ -119,7 +123,7 @@
         Item.Text = ""
 
     End Sub
-    Sub setFilter()
+    Sub SetFilter()
         If Supplier.Text = "" Then
             If rbSettle.Checked Then tbSett.DefaultView.RowFilter = ""
             If Not rbSettle.Checked Then tbRcpt.DefaultView.RowFilter = ""
@@ -129,9 +133,9 @@
         End If
 
         If Item.Text <> "" Then
-            If rbSettle.Checked Then tbSett.DefaultView.RowFilter = tbSett.DefaultView.RowFilter & _
+            If rbSettle.Checked Then tbSett.DefaultView.RowFilter = tbSett.DefaultView.RowFilter &
                If(tbSett.DefaultView.RowFilter = "", "", " AND ") & "ItemDesc = '" & EscChar(Item.Text) & "'"
-            If Not rbSettle.Checked Then tbRcpt.DefaultView.RowFilter = tbRcpt.DefaultView.RowFilter & _
+            If Not rbSettle.Checked Then tbRcpt.DefaultView.RowFilter = tbRcpt.DefaultView.RowFilter &
                If(tbRcpt.DefaultView.RowFilter = "", "", " AND ") & "ItemDesc = '" & EscChar(Item.Text) & "'"
         End If
     End Sub
@@ -139,7 +143,7 @@
     'Query database, and load Grid
     Sub LoadRcpts()
         ' or settling as the case may be...
-        setConnString()
+        SetConnString()
         If LWconnectString = "" Then Exit Sub
 
         Grid.DataSource = Nothing
@@ -222,6 +226,11 @@
             Grid.Columns("SettPrice").ReadOnly = False
             Grid.Columns("SettValue").ReadOnly = False
 
+            '07.27.20 format 3 new columns as readonly = false KH
+            Grid.Columns("RunWO_No").ReadOnly = False
+            Grid.Columns("RunWO_Lot").ReadOnly = False
+            Grid.Columns("WO_Prodname").ReadOnly = False
+
             Grid.Columns("recno").Visible = False
 
             Grid.Columns("bolno").DefaultCellStyle.BackColor = Color.Yellow
@@ -237,6 +246,12 @@
             Grid.Columns("SettSolWgt").DefaultCellStyle.BackColor = Color.LightSteelBlue
             Grid.Columns("SettPrice").DefaultCellStyle.BackColor = Color.LightSteelBlue
             Grid.Columns("SettValue").DefaultCellStyle.BackColor = Color.LightSteelBlue
+
+            '07.27.20 format 3 new columns as backcolor = lightsteelblue KH
+            Grid.Columns("RunWO_No").DefaultCellStyle.BackColor = Color.LightSteelBlue
+            Grid.Columns("RunWO_Lot").DefaultCellStyle.BackColor = Color.LightSteelBlue
+            Grid.Columns("WO_Prodname").DefaultCellStyle.BackColor = Color.LightSteelBlue
+
         Else
             Grid.Columns("loadno").ReadOnly = False
             Grid.Columns("bolno").ReadOnly = False
@@ -254,19 +269,47 @@
 
         Grid.AutoResizeColumns()
 
+        '07.28.20 - new block to persist user column sort/sortdirection settings
+        If rbSettle.Checked Then
+            Grid.Sort(Grid.Columns(My.Settings.SettSortCol), My.Settings.SettSortDirection)
+        Else
+            Grid.Sort(Grid.Columns(My.Settings.RcptSortCol), My.Settings.RcptSortDirection)
+        End If
+        '07.28.20 end block
+
         Me.Cursor = Cursors.Arrow
     End Sub
 
     'User Interface
     Private Sub Form_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
 
-        rbProduction.Checked = If(My.Settings.Production, True, False)
-        rbSettle.Checked = If(My.Settings.Mode, True, False)
+        rbProduction.Checked = My.Settings.Production
+        rbSettle.Checked = My.Settings.Mode
 
         rbTest.Checked = Not rbProduction.Checked
         rbReceive.Checked = Not rbSettle.Checked
 
         LoadStrc()
+    End Sub
+    Private Sub Form_FormClosing(sender As Object, e As FormClosingEventArgs) _
+     Handles MyBase.FormClosing
+        '07.28.20 new sub. handles user setting sorting info.
+        If rbSettle.Checked Then
+            My.Settings.SettSortCol = Grid.SortedColumn.Index
+            If Grid.SortOrder = 1 Then
+                My.Settings.SettSortDirection = 0
+            Else
+                My.Settings.SettSortDirection = 1
+            End If
+        Else
+            My.Settings.RcptSortCol = Grid.SortedColumn.Index
+            If Grid.SortOrder = 1 Then
+                My.Settings.RcptSortDirection = 0
+            Else
+                My.Settings.RcptSortDirection = 1
+            End If
+        End If
+
     End Sub
     Private Sub strc_enter(sender As Object, e As System.EventArgs) Handles strc.Enter
         LoadStrc()
@@ -283,7 +326,7 @@
     Private Sub rbProduction_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rbProduction.CheckedChanged, rbTest.CheckedChanged
         My.Settings.Production = rbProduction.Checked
         My.Settings.Save()
-        setConnString()
+        SetConnString()
     End Sub
     Private Sub rbSettle_CheckedChanged(sender As Object, e As EventArgs) Handles rbSettle.CheckedChanged
         My.Settings.Mode = rbSettle.Checked
@@ -321,7 +364,7 @@
     End Sub
     ' Filter Grid
     Private Sub Supplier_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Supplier.SelectedIndexChanged, Item.SelectedIndexChanged
-        setFilter()
+        SetFilter()
     End Sub
 
     ' Update Back-End Database
@@ -346,9 +389,9 @@
         End If
     End Sub
     Private Sub Grid_CellEndEdit(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Grid.CellEndEdit
-        updatecell(e.ColumnIndex, e.RowIndex)
+        Updatecell(e.ColumnIndex, e.RowIndex)
     End Sub
-    Private Sub updatecell(pCol As Integer, pRow As Integer)
+    Private Sub Updatecell(pCol As Integer, pRow As Integer)
         ' validation complete, update database
         Dim fldname As String = Grid.Columns(pCol).Name
         Dim ssql As String = "update msgreceipts set [" & fldname & "] = @newdata, lastchgdt = @lastchgdt, lastchgusr = @lastchgusr where recno = @recno"
@@ -384,7 +427,7 @@
         End If
     End Sub
     Private Sub UnfreezeStripMenu_Click(sender As Object, e As EventArgs) Handles UnfreezeStripMenu.Click
-        unfreeze()
+        Unfreeze()
     End Sub
     Private Sub CopyWHeaderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyWHeaderToolStripMenuItem.Click
         Grid.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText
@@ -407,7 +450,7 @@
         Next
         If MsgBox("Update these cells?", MsgBoxStyle.YesNo, Me.Text) = MsgBoxResult.Yes Then
             For Each cc As DataGridViewCell In Grid.SelectedCells
-                updatecell(cc.ColumnIndex, cc.RowIndex)
+                Updatecell(cc.ColumnIndex, cc.RowIndex)
             Next
         Else
             LoadRcpts()
@@ -417,5 +460,9 @@
 
     Private Sub strc_SelectedIndexChanged(sender As Object, e As EventArgs) Handles strc.SelectedIndexChanged
 
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
     End Sub
 End Class
