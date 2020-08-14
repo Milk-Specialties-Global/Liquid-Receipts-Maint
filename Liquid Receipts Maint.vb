@@ -2,10 +2,13 @@
     Private LWconnectString As String = ""
 
     ' Two different presentations for maintenance, but with the same selection criteria
+    '08.12.20 add Trailer number (TrlrNo) to Receipts view.
     ReadOnly srcpt As String = "select RecNo, Strc, RecTime, RecDte, SampNo, PDesc as ItemDesc, PNum as ItemNo, OrdNo, SupName, LoadNo, BolNo " &
-                        ", TruckWgt, LotNo, FreightCost, Carrier from msgreceipts " &
+                        ", TruckWgt, LotNo, FreightCost, Carrier, TrlrNo from msgreceipts " &
                         "where recdte between @datefrom and @dateto and strc = @strc"
-    ' 07.27.20 5 new fields at the end (2 calc'd, 3 manual entry) KH
+    ' 07.27.20 5 new fields at the end (1 from field, 1 calc'd, 3 manual entry) KH
+    ' 08.07.20 - on both sql strings, adjusted [ButterFat%] to draw from LIMSRSLT_LIQUID.[Monjonnier Fat Analysis for Liquids], added join KH
+    ' 08.13.20 - added RunNo (similar to ML) because users can now hide columns and save in user settings 
     ReadOnly ssett As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
@@ -13,13 +16,15 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", ButterfatPct as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname" &
+                        ", rsltLiq.[Monjonnier Fat Analysis for Liquids] as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno and ras.acode='PROT_ASIS_LECO' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_LECO_LIQUID' and rdb.resultpart='mean_avg'" &
+                        " left outer join LIMSRSLT_LIQUID as rsltLiq on rsltLiq.sampno=m.sampno" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
     'added new codes for ML
-    '07.27.20 5 new fields at the end (2 calc'd, 3 manual entry) KH
+    'note: difference in this sql is the joined value from ras.acode(s)
+    '07.27.20 5 new fields at the end (1 from field, 1 calc'd, 3 manual entry) KH
     ReadOnly ssettml As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
@@ -27,10 +32,11 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", ButterfatPct as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname" &
+                        ", rsltLiq.[Monjonnier Fat Analysis for Liquids] as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno And ras.acode='PROT_ASIS_kjeldahl' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_kjeldahl' and rdb.resultpart='mean_avg'" &
+                        " left outer join LIMSRSLT_LIQUID as rsltLiq on rsltLiq.sampno=m.sampno" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
     Private ReadOnly tbRcpt As New DataTable
     Private ReadOnly tbSett As New DataTable
@@ -122,6 +128,22 @@
         Next ii
         Item.Text = ""
 
+        If rbSettle.Checked Then
+            If strc.Text = "ML" Or
+            strc.Text = "NE" Then
+                '08.12.20 new block
+                CboRun.Items.Clear()
+                CboRun.Items.Add("")    '"no filter" is always an option
+                Dim Runs = From row In If(rbSettle.Checked, tbSett, tbRcpt).AsEnumerable Select row.Field(Of Nullable(Of Int32))("RunNo") Distinct
+                Dim sr = From s In Runs Order By s Select s
+                For ii = 0 To sr.Count - 1
+                    If sr(ii) <> vbEmpty Then CboRun.Items.Add(sr(ii))
+                Next ii
+                CboRun.Text = ""
+            End If
+        End If
+
+
     End Sub
     Sub SetFilter()
         If Supplier.Text = "" Then
@@ -137,6 +159,16 @@
                If(tbSett.DefaultView.RowFilter = "", "", " AND ") & "ItemDesc = '" & EscChar(Item.Text) & "'"
             If Not rbSettle.Checked Then tbRcpt.DefaultView.RowFilter = tbRcpt.DefaultView.RowFilter &
                If(tbRcpt.DefaultView.RowFilter = "", "", " AND ") & "ItemDesc = '" & EscChar(Item.Text) & "'"
+        End If
+
+        '08.12.20 - new block
+        If strc.Text = "ML" Then
+            If CboRun.Text <> "" Then
+                If rbSettle.Checked Then tbSett.DefaultView.RowFilter = tbSett.DefaultView.RowFilter &
+               If(tbSett.DefaultView.RowFilter = "", "", " AND ") & "RunNo = '" & EscChar(CboRun.Text) & "'"
+                If Not rbSettle.Checked Then tbRcpt.DefaultView.RowFilter = tbRcpt.DefaultView.RowFilter &
+               If(tbRcpt.DefaultView.RowFilter = "", "", " AND ") & "RunNo = '" & EscChar(CboRun.Text) & "'"
+            End If
         End If
     End Sub
 
@@ -156,6 +188,19 @@
         Else
             tbRcpt.Clear()
         End If
+
+        '08.12.20 new conditions to handle new run controls
+        If strc.Text = "ML" Or
+                strc.Text = "NE" Then
+            If rbSettle.Checked Then
+                LblRun.Visible = True
+                CboRun.Visible = True
+            End If
+        Else
+            LblRun.Visible = False
+            CboRun.Visible = False
+        End If
+
         Using lwconn As New SqlClient.SqlConnection(LWconnectString)
 
             '  Using cmd As New SqlClient.SqlCommand(If(rbSettle.Checked, ssett, srcpt), lwconn)
@@ -199,8 +244,6 @@
 
 
         End Using
-
-
 
         LoadFilter()
 
@@ -269,13 +312,19 @@
 
         Grid.AutoResizeColumns()
 
-        '07.28.20 - new block to persist user column sort/sortdirection settings
-        If rbSettle.Checked Then
-            Grid.Sort(Grid.Columns(My.Settings.SettSortCol), My.Settings.SettSortDirection)
-        Else
-            Grid.Sort(Grid.Columns(My.Settings.RcptSortCol), My.Settings.RcptSortDirection)
-        End If
-        '07.28.20 end block
+        ''07.28.20 - new block to persist user column sort/sortdirection settings
+        '08.13.20 moving this block into GetGridDisplay
+        'If rbSettle.Checked Then
+        '    '08.12.20 because ML/NE has 1 extra columm than others, it's possible SettSortCol = last column & will throw index out of range. Account for that by adjusting .SettSortCol = 1
+        '    If strc.Text <> "ML" And strc.Text <> "NE" And My.Settings.SettSortCol = 28 Then My.Settings.SettSortCol = 1
+        '    Grid.Sort(Grid.Columns(My.Settings.SettSortCol), My.Settings.SettSortDirection)
+        'Else
+        '    Grid.Sort(Grid.Columns(My.Settings.RcptSortCol), My.Settings.RcptSortDirection)
+        'End If
+        ''07.28.20 end block
+
+        '08.12.20 recall grid settings from usersettings
+        GetGridDisplay(Grid)
 
         Me.Cursor = Cursors.Arrow
     End Sub
@@ -293,22 +342,28 @@
     End Sub
     Private Sub Form_FormClosing(sender As Object, e As FormClosingEventArgs) _
      Handles MyBase.FormClosing
-        '07.28.20 new sub. handles user setting sorting info.
-        If rbSettle.Checked Then
-            My.Settings.SettSortCol = Grid.SortedColumn.Index
-            If Grid.SortOrder = 1 Then
-                My.Settings.SettSortDirection = 0
-            Else
-                My.Settings.SettSortDirection = 1
-            End If
-        Else
-            My.Settings.RcptSortCol = Grid.SortedColumn.Index
-            If Grid.SortOrder = 1 Then
-                My.Settings.RcptSortDirection = 0
-            Else
-                My.Settings.RcptSortDirection = 1
-            End If
-        End If
+
+        '08.13.20 moving this block to SaveGridDisplay
+        ''07.28.20 new sub. handles user setting sorting info.
+        'If rbSettle.Checked Then
+        '    My.Settings.SettSortCol = Grid.SortedColumn.Index
+        '    If Grid.SortOrder = 1 Then
+        '        My.Settings.SettSortDirection = 0
+        '    Else
+        '        My.Settings.SettSortDirection = 1
+        '    End If
+        'Else
+        '    My.Settings.RcptSortCol = Grid.SortedColumn.Index
+        '    If Grid.SortOrder = 1 Then
+        '        My.Settings.RcptSortDirection = 0
+        '    Else
+        '        My.Settings.RcptSortDirection = 1
+        '    End If
+        'End If
+
+        '08.12.20
+        SaveGridDisplay(Grid, rbSettle.Checked)
+
 
     End Sub
     Private Sub strc_enter(sender As Object, e As System.EventArgs) Handles strc.Enter
@@ -329,6 +384,7 @@
         SetConnString()
     End Sub
     Private Sub rbSettle_CheckedChanged(sender As Object, e As EventArgs) Handles rbSettle.CheckedChanged
+        SaveGridDisplay(Grid, Not rbSettle.Checked) '08.13.20 Using Not rbSettle.checked because by the time this code is invoked the setting of rbSettle.Checked is impacted (but we want to save the state of the exiting grid)
         My.Settings.Mode = rbSettle.Checked
         My.Settings.Save()
         LoadRcpts()
@@ -358,13 +414,11 @@
             End Using
         End Using
 
+        SaveGridDisplay(Grid, rbSettle.Checked)  '08.13.20
+
         ' Calculation procedure completed, reload data
         LoadRcpts()
 
-    End Sub
-    ' Filter Grid
-    Private Sub Supplier_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Supplier.SelectedIndexChanged, Item.SelectedIndexChanged
-        SetFilter()
     End Sub
 
     ' Update Back-End Database
@@ -457,12 +511,115 @@
         End If
 
     End Sub
+    'Filter gird
+    Private Sub Supplier_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Supplier.SelectedIndexChanged
+        SetFilter()
+    End Sub
 
-    Private Sub strc_SelectedIndexChanged(sender As Object, e As EventArgs) Handles strc.SelectedIndexChanged
+    Private Sub Item_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Item.SelectedIndexChanged
+        SetFilter()
+    End Sub
 
+    Private Sub CboRun_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CboRun.SelectedIndexChanged
+        SetFilter()
     End Sub
 
     Protected Overrides Sub Finalize()
         MyBase.Finalize()
     End Sub
+
+    Private Sub SaveGridDisplay(GridIn As DataGridView, BoolIsSett As Boolean)
+        '08.12.20 this routine takes in an instance of the current grid. It loops thru the grid and saves the current displays in user settings
+        'For each grid, loop thru and save colVisibile, colWidth, colDisplayIndex for each column, store settings as appropriate user setting (stored as csv)
+        Dim StrColVis As String = ""
+        Dim StrColWidth As String = ""
+        Dim StrColDisplay As String = ""
+
+        For i As Integer = 0 To GridIn.Columns.Count - 1
+            StrColVis = StrColVis & GridIn.Columns(i).Visible & ","
+            StrColWidth = StrColWidth & GridIn.Columns(i).Width & ","
+            StrColDisplay = StrColDisplay & GridIn.Columns(i).DisplayIndex & ","
+        Next i
+
+        'cull off final comma on each
+        StrColVis = StrColVis.TrimEnd(CChar(","))
+        StrColWidth = StrColWidth.TrimEnd(CChar(","))
+        StrColDisplay = StrColDisplay.TrimEnd(CChar(","))
+
+        If BoolIsSett Then
+            My.Settings.SettColVisible = StrColVis
+            My.Settings.SettColWidth = StrColWidth
+            My.Settings.SettColDisplayIndex = StrColDisplay
+        Else
+            'save in user setting for sett_grid
+            My.Settings.RcptColVisible = StrColVis
+            My.Settings.RcptColWidth = StrColWidth
+            My.Settings.RcptColDisplayIndex = StrColDisplay
+        End If
+
+        'handles user setting sorting info.
+        If BoolIsSett Then
+            My.Settings.SettSortCol = GridIn.SortedColumn.Index
+            If GridIn.SortOrder = 1 Then
+                My.Settings.SettSortDirection = 0
+            Else
+                My.Settings.SettSortDirection = 1
+            End If
+        Else
+            My.Settings.RcptSortCol = GridIn.SortedColumn.Index
+            If GridIn.SortOrder = 1 Then
+                My.Settings.RcptSortDirection = 0
+            Else
+                My.Settings.RcptSortDirection = 1
+            End If
+        End If
+
+    End Sub
+
+    Private Sub GetGridDisplay(GridIn As DataGridView)
+        '08.12.20 this routine takes in an instance of the current grid. It loops thru the grid and restores the display values from user settings
+        'For each grid, loop thru and set colVisibile, colWidth, colDisplayIndex for each column, from appropriate user setting (stored as csv)
+
+        'Exit Sub
+
+        Dim arrVis() As String
+        Dim arrWidth() As String
+        Dim arrDisplayIndex() As String
+
+        'load arrays from csvs in usersettings
+        If rbSettle.Checked Then
+            If My.Settings.SettColVisible.Trim() = "" Then Exit Sub
+            arrVis = My.Settings.SettColVisible.Split(","c)
+            arrWidth = My.Settings.SettColWidth.Split(","c)
+            arrDisplayIndex = My.Settings.SettColDisplayIndex.Split(","c)
+        Else
+            If My.Settings.RcptColVisible.Trim() = "" Then Exit Sub
+            arrVis = My.Settings.RcptColVisible.Split(","c)
+            arrWidth = My.Settings.RcptColWidth.Split(","c)
+            arrDisplayIndex = My.Settings.RcptColDisplayIndex.Split(","c)
+        End If
+
+        For ix As Int16 = 0 To GridIn.Columns.Count - 1
+            Console.WriteLine("col num: " & ix & " vis: " & arrVis(ix) & " width: " & arrWidth(ix) & " display index: " & arrDisplayIndex(ix))
+        Next
+
+        For i As Integer = 0 To GridIn.Columns.Count - 1
+            GridIn.Columns(i).Visible = arrVis(i)
+            GridIn.Columns(i).Width = Convert.ToInt32(arrWidth(i))
+            GridIn.Columns(i).DisplayIndex = Convert.ToInt32(arrDisplayIndex(i))
+        Next i
+
+        'to persist user column sort/sortdirection settings
+        If rbSettle.Checked Then
+            '08.12.20 because ML/NE has 1 extra columm than others, it's possible SettSortCol = last column & will throw index out of range. Account for that by adjusting .SettSortCol = 1
+            If strc.Text <> "ML" And strc.Text <> "NE" And My.Settings.SettSortCol = 28 Then My.Settings.SettSortCol = 1
+            GridIn.Sort(GridIn.Columns(My.Settings.SettSortCol), My.Settings.SettSortDirection)
+        Else
+            GridIn.Sort(GridIn.Columns(My.Settings.RcptSortCol), My.Settings.RcptSortDirection)
+        End If
+        '07.28.20 end block
+
+
+    End Sub
+
 End Class

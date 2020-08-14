@@ -124,6 +124,78 @@ Namespace My
                 Me("RcptSortDirection") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property SettColVisible() As String
+            Get
+                Return CType(Me("SettColVisible"),String)
+            End Get
+            Set
+                Me("SettColVisible") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property SettColWidth() As String
+            Get
+                Return CType(Me("SettColWidth"),String)
+            End Get
+            Set
+                Me("SettColWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property SettColDisplayIndex() As String
+            Get
+                Return CType(Me("SettColDisplayIndex"),String)
+            End Get
+            Set
+                Me("SettColDisplayIndex") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property RcptColVisible() As String
+            Get
+                Return CType(Me("RcptColVisible"),String)
+            End Get
+            Set
+                Me("RcptColVisible") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property RcptColWidth() As String
+            Get
+                Return CType(Me("RcptColWidth"),String)
+            End Get
+            Set
+                Me("RcptColWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property RcptColDisplayIndex() As String
+            Get
+                Return CType(Me("RcptColDisplayIndex"),String)
+            End Get
+            Set
+                Me("RcptColDisplayIndex") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
