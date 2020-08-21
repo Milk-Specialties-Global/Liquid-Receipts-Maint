@@ -23,6 +23,7 @@ Partial Class LiquidReceiptsMaint
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(LiquidReceiptsMaint))
         Me.RcptDateFrom = New System.Windows.Forms.DateTimePicker()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.t = New System.Windows.Forms.Label()
@@ -374,9 +375,10 @@ Partial Class LiquidReceiptsMaint
         Me.Controls.Add(Me.RcptDateTo)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.RcptDateFrom)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "LiquidReceiptsMaint"
-        Me.Text = "Liquid Receipts Maint"
+        Me.Text = "Liquid Receipts Maint TEST"
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.Panel1.ResumeLayout(False)

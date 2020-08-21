@@ -8,9 +8,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95133A93-80E2-49AA-9630-06153220BC75}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>LiquidReceiptsMaint.My.MyApplication</StartupObject>
-    <RootNamespace>LiquidReceiptsMaint</RootNamespace>
-    <AssemblyName>Liquid Receipts Maint</AssemblyName>
+    <StartupObject>LiquidReceiptsMaint_Test.My.MyApplication</StartupObject>
+    <RootNamespace>LiquidReceiptsMaint_Test</RootNamespace>
+    <AssemblyName>Liquid Receipts Maint_Test</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -29,7 +29,7 @@
     <PublisherName>Milk Specialties Global</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>26</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -43,7 +43,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Liquid Receipts Maint.xml</DocumentationFile>
+    <DocumentationFile>Liquid Receipts Maint_Test.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -53,7 +53,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Liquid Receipts Maint.xml</DocumentationFile>
+    <DocumentationFile>Liquid Receipts Maint_Test.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -82,6 +82,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>testicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -118,6 +121,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -177,6 +181,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="testicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

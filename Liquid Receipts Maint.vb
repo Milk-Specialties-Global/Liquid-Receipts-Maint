@@ -302,12 +302,20 @@
             Grid.Columns("truckwgt").ReadOnly = False
             Grid.Columns("FreightCost").ReadOnly = False
 
+            '08.20.20 per Anne in FD, make Carrier & TrlrNo editable 
+            Grid.Columns("Carrier").ReadOnly = False
+            Grid.Columns("TrlrNo").ReadOnly = False
+
             Grid.Columns("recno").Visible = False
             Grid.Columns("loadno").DefaultCellStyle.BackColor = Color.Yellow
             Grid.Columns("bolno").DefaultCellStyle.BackColor = Color.Yellow
             Grid.Columns("lotno").DefaultCellStyle.BackColor = Color.Yellow
             Grid.Columns("truckwgt").DefaultCellStyle.BackColor = Color.Yellow
             Grid.Columns("FreightCost").DefaultCellStyle.BackColor = Color.Yellow
+
+            '08.20.20 per Anne in FD, make Carrier & TrlrNo yellow 
+            Grid.Columns("Carrier").DefaultCellStyle.BackColor = Color.Yellow
+            Grid.Columns("TrlrNo").DefaultCellStyle.BackColor = Color.Yellow
         End If
 
         Grid.AutoResizeColumns()
@@ -331,6 +339,9 @@
 
     'User Interface
     Private Sub Form_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+
+        'HARDCODE - Used to reset user settings when debugging. REMOVE before building.
+        'My.Settings.Reset()
 
         rbProduction.Checked = My.Settings.Production
         rbSettle.Checked = My.Settings.Mode
@@ -559,21 +570,29 @@
 
         'handles user setting sorting info.
         If BoolIsSett Then
-            My.Settings.SettSortCol = GridIn.SortedColumn.Index
+            If IsNothing(GridIn.SortedColumn) Then
+                My.Settings.SettSortCol = 0
+            Else
+                My.Settings.SettSortCol = GridIn.SortedColumn.Index
+            End If
             If GridIn.SortOrder = 1 Then
                 My.Settings.SettSortDirection = 0
             Else
                 My.Settings.SettSortDirection = 1
             End If
         Else
-            My.Settings.RcptSortCol = GridIn.SortedColumn.Index
-            If GridIn.SortOrder = 1 Then
-                My.Settings.RcptSortDirection = 0
+            If IsNothing(GridIn.SortedColumn) Then
+                My.Settings.RcptSortCol = 0
             Else
-                My.Settings.RcptSortDirection = 1
+                My.Settings.RcptSortCol = GridIn.SortedColumn.Index
             End If
+            If GridIn.SortOrder = 1 Then
+                    My.Settings.RcptSortDirection = 0
+                Else
+                    My.Settings.RcptSortDirection = 1
+                End If
+            'End If
         End If
-
     End Sub
 
     Private Sub GetGridDisplay(GridIn As DataGridView)
