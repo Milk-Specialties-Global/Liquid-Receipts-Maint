@@ -378,7 +378,7 @@ Partial Class LiquidReceiptsMaint
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "LiquidReceiptsMaint"
-        Me.Text = "Liquid Receipts Maint TEST"
+        Me.Text = "Liquid Receipts Maint"
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.Panel1.ResumeLayout(False)

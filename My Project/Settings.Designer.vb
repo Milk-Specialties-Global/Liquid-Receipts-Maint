@@ -207,9 +207,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.LiquidReceiptsMaint_Test.My.MySettings
+        Friend ReadOnly Property Settings() As Global.LiquidReceiptsMaint.My.MySettings
             Get
-                Return Global.LiquidReceiptsMaint_Test.My.MySettings.Default
+                Return Global.LiquidReceiptsMaint.My.MySettings.Default
             End Get
         End Property
     End Module

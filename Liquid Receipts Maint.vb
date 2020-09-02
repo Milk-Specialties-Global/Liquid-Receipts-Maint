@@ -618,9 +618,9 @@
             arrDisplayIndex = My.Settings.RcptColDisplayIndex.Split(","c)
         End If
 
-        For ix As Int16 = 0 To GridIn.Columns.Count - 1
-            Console.WriteLine("col num: " & ix & " vis: " & arrVis(ix) & " width: " & arrWidth(ix) & " display index: " & arrDisplayIndex(ix))
-        Next
+        'For ix As Int16 = 0 To GridIn.Columns.Count - 1
+        'Console.WriteLine("col num: " & ix & " vis: " & arrVis(ix) & " width: " & arrWidth(ix) & " display index: " & arrDisplayIndex(ix))
+        'Next
 
         For i As Integer = 0 To GridIn.Columns.Count - 1
             GridIn.Columns(i).Visible = arrVis(i)

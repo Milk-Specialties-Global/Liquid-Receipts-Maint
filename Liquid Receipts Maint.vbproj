@@ -8,15 +8,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95133A93-80E2-49AA-9630-06153220BC75}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>LiquidReceiptsMaint_Test.My.MyApplication</StartupObject>
-    <RootNamespace>LiquidReceiptsMaint_Test</RootNamespace>
-    <AssemblyName>Liquid Receipts Maint_Test</AssemblyName>
+    <StartupObject>LiquidReceiptsMaint.My.MyApplication</StartupObject>
+    <RootNamespace>LiquidReceiptsMaint</RootNamespace>
+    <AssemblyName>Liquid Receipts Maint</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>\\msg-ep-file01\apps\Milk Specialties Custom\_Test\Liquid Receiving\Liquid Receipts Maint\</PublishUrl>
+    <PublishUrl>\\milk1\apps\Milk Specialties Custom\Liquid Receiving\Liquid Receipts Maint\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -26,10 +26,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>\\msg-ep-file01\apps\Milk Specialties Custom\Liquid Receiving\Liquid Receipts Maint\</UpdateUrl>
     <PublisherName>Milk Specialties Global</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>23</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -43,7 +44,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Liquid Receipts Maint_Test.xml</DocumentationFile>
+    <DocumentationFile>Liquid Receipts Maint.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -53,7 +54,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Liquid Receipts Maint_Test.xml</DocumentationFile>
+    <DocumentationFile>Liquid Receipts Maint.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -84,7 +85,7 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>testicon.ico</ApplicationIcon>
+    <ApplicationIcon>ProdIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -183,6 +184,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ProdIcon.ico" />
     <Content Include="testicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
