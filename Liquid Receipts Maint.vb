@@ -353,34 +353,14 @@
     End Sub
     Private Sub Form_FormClosing(sender As Object, e As FormClosingEventArgs) _
      Handles MyBase.FormClosing
-
-        '08.13.20 moving this block to SaveGridDisplay
-        ''07.28.20 new sub. handles user setting sorting info.
-        'If rbSettle.Checked Then
-        '    My.Settings.SettSortCol = Grid.SortedColumn.Index
-        '    If Grid.SortOrder = 1 Then
-        '        My.Settings.SettSortDirection = 0
-        '    Else
-        '        My.Settings.SettSortDirection = 1
-        '    End If
-        'Else
-        '    My.Settings.RcptSortCol = Grid.SortedColumn.Index
-        '    If Grid.SortOrder = 1 Then
-        '        My.Settings.RcptSortDirection = 0
-        '    Else
-        '        My.Settings.RcptSortDirection = 1
-        '    End If
-        'End If
-
-        '08.12.20
         SaveGridDisplay(Grid, rbSettle.Checked)
-
-
+        My.Settings.Save()  '09.10.20 ... oops 
     End Sub
     Private Sub strc_enter(sender As Object, e As System.EventArgs) Handles strc.Enter
         LoadStrc()
     End Sub
     Private Sub strc_TextChanged(sender As Object, e As System.EventArgs) Handles strc.TextChanged
+        SaveGridDisplay(Grid, rbSettle.Checked)  '09.10.20
         LoadRcpts()
     End Sub
     Private Sub LoadData_Click(sender As System.Object, e As System.EventArgs) Handles LoadData.Click
@@ -402,7 +382,8 @@
     End Sub
     Private Sub RcptDateFrom_ValueChanged(sender As Object, e As EventArgs) Handles RcptDateFrom.ValueChanged
         RcptDateTo.Value = RcptDateFrom.Value
-        LoadRcpts()
+        '09.10.20 move this to RcptDateTo_ValueChanged as it gets invoked by above.
+        'LoadRcpts()
     End Sub
     Private Sub CalcColumns_Click(sender As Object, e As EventArgs) Handles CalcColumns.Click
         If LWconnectString = "" Then
@@ -557,15 +538,25 @@
         StrColWidth = StrColWidth.TrimEnd(CChar(","))
         StrColDisplay = StrColDisplay.TrimEnd(CChar(","))
 
-        If BoolIsSett Then
-            My.Settings.SettColVisible = StrColVis
-            My.Settings.SettColWidth = StrColWidth
-            My.Settings.SettColDisplayIndex = StrColDisplay
-        Else
-            'save in user setting for sett_grid
-            My.Settings.RcptColVisible = StrColVis
-            My.Settings.RcptColWidth = StrColWidth
-            My.Settings.RcptColDisplayIndex = StrColDisplay
+        Console.WriteLine(BoolIsSett)
+        Console.WriteLine(StrColDisplay)
+        Console.WriteLine(My.Settings.SettColDisplayIndex)
+        Console.WriteLine(My.Settings.RcptColDisplayIndex)
+
+        '09.10.20 on first display, before anything exists in the grid, strColVis, StrColWidth and StrColDisplay are empty, causing everything to be lost in settings.
+        'conditioning for that case here.
+
+        If StrColDisplay <> "" Then
+            If BoolIsSett Then
+                My.Settings.SettColVisible = StrColVis
+                My.Settings.SettColWidth = StrColWidth
+                My.Settings.SettColDisplayIndex = StrColDisplay
+            Else
+                'save in user setting for sett_grid
+                My.Settings.RcptColVisible = StrColVis
+                My.Settings.RcptColWidth = StrColWidth
+                My.Settings.RcptColDisplayIndex = StrColDisplay
+            End If
         End If
 
         'handles user setting sorting info.
@@ -625,8 +616,11 @@
         For i As Integer = 0 To GridIn.Columns.Count - 1
             GridIn.Columns(i).Visible = arrVis(i)
             GridIn.Columns(i).Width = Convert.ToInt32(arrWidth(i))
-            GridIn.Columns(i).DisplayIndex = Convert.ToInt32(arrDisplayIndex(i))
+            'GridIn.Columns(i).DisplayIndex = Convert.ToInt32(arrDisplayIndex(i))   '09.10.20 commented out
         Next i
+
+        '09.10.20
+        ReOrderDamnColumns(GridIn)
 
         'to persist user column sort/sortdirection settings
         If rbSettle.Checked Then
@@ -638,7 +632,47 @@
         End If
         '07.28.20 end block
 
+    End Sub
+
+    Private Sub RcptDateTo_ValueChanged(sender As Object, e As EventArgs) Handles RcptDateTo.ValueChanged
+        '09.10.20 new routine - moved LoadRcpts() from RcptDateFrom_ValueChanged as that code invokes this routine.
+        SaveGridDisplay(Grid, rbSettle.Checked)
+        LoadRcpts()
+    End Sub
+
+    Private Sub ReOrderDamnColumns(DamnGrid As DataGridView)
+        '09.10.20 - sort arrdisplayindex and return the columns in order - Copied from MAINT
+        'need both arrIndex and arr(value). To manage I'm using a List of Tuples
+
+        'the tuple is column number (arrIndex), displayIndex
+        Dim lstToSort As New List(Of Tuple(Of Integer, Integer))
+        Dim arrVal As Integer
+        Dim arrSort() As String
+
+        If rbSettle.Checked Then
+            arrSort = My.Settings.SettColDisplayIndex.Split(","c)
+        Else
+            arrSort = My.Settings.RcptColDisplayIndex.Split(","c)
+        End If
+
+        'add items
+        For ix = 0 To UBound(arrSort)
+            arrVal = Convert.ToInt32(arrSort(ix))
+            lstToSort.Add(Tuple.Create(ix, arrVal))
+        Next
+
+        'sort on 2nd value (display index)
+        lstToSort = lstToSort.OrderBy(Function(i) i.Item2).ToList
+
+        If DamnGrid.Columns.Count > 0 Then
+            For Each tpl As Tuple(Of Integer, Integer) In lstToSort
+                DamnGrid.Columns(tpl.Item1).DisplayIndex = tpl.Item2
+            Next
+        End If
 
     End Sub
 
+    Private Sub rbReceive_CheckedChanged(sender As Object, e As EventArgs) Handles rbReceive.CheckedChanged
+
+    End Sub
 End Class
