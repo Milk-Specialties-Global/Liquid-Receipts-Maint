@@ -65,57 +65,51 @@ Partial Class LiquidReceiptsMaint
         'RcptDateFrom
         '
         Me.RcptDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.RcptDateFrom.Location = New System.Drawing.Point(102, 38)
-        Me.RcptDateFrom.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.RcptDateFrom.Location = New System.Drawing.Point(68, 25)
         Me.RcptDateFrom.Name = "RcptDateFrom"
-        Me.RcptDateFrom.Size = New System.Drawing.Size(146, 26)
+        Me.RcptDateFrom.Size = New System.Drawing.Size(99, 20)
         Me.RcptDateFrom.TabIndex = 0
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(18, 40)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label1.Location = New System.Drawing.Point(12, 26)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(79, 20)
+        Me.Label1.Size = New System.Drawing.Size(53, 13)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Rcpt from"
         '
         't
         '
         Me.t.AutoSize = True
-        Me.t.Location = New System.Drawing.Point(285, 40)
-        Me.t.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.t.Location = New System.Drawing.Point(190, 26)
         Me.t.Name = "t"
-        Me.t.Size = New System.Drawing.Size(27, 20)
+        Me.t.Size = New System.Drawing.Size(20, 13)
         Me.t.TabIndex = 3
         Me.t.Text = "To"
         '
         'RcptDateTo
         '
         Me.RcptDateTo.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.RcptDateTo.Location = New System.Drawing.Point(324, 38)
-        Me.RcptDateTo.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.RcptDateTo.Location = New System.Drawing.Point(216, 25)
         Me.RcptDateTo.Name = "RcptDateTo"
-        Me.RcptDateTo.Size = New System.Drawing.Size(151, 26)
+        Me.RcptDateTo.Size = New System.Drawing.Size(102, 20)
         Me.RcptDateTo.TabIndex = 2
         '
         'strc
         '
         Me.strc.FormattingEnabled = True
-        Me.strc.Location = New System.Drawing.Point(582, 34)
-        Me.strc.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.strc.Location = New System.Drawing.Point(388, 22)
         Me.strc.Name = "strc"
-        Me.strc.Size = New System.Drawing.Size(82, 28)
+        Me.strc.Size = New System.Drawing.Size(56, 21)
         Me.strc.TabIndex = 4
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(486, 40)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Location = New System.Drawing.Point(324, 26)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(86, 20)
+        Me.Label2.Size = New System.Drawing.Size(58, 13)
         Me.Label2.TabIndex = 5
         Me.Label2.Text = "Stockroom"
         '
@@ -130,11 +124,10 @@ Partial Class LiquidReceiptsMaint
         Me.Grid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText
         Me.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.Grid.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.Grid.Location = New System.Drawing.Point(12, 185)
-        Me.Grid.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Grid.Location = New System.Drawing.Point(15, 110)
         Me.Grid.Name = "Grid"
         Me.Grid.RowHeadersWidth = 62
-        Me.Grid.Size = New System.Drawing.Size(1440, 591)
+        Me.Grid.Size = New System.Drawing.Size(917, 379)
         Me.Grid.TabIndex = 6
         '
         'ContextMenuStrip1
@@ -142,55 +135,54 @@ Partial Class LiquidReceiptsMaint
         Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FreezeToolStripMenu, Me.UnfreezeStripMenu, Me.ToolStripSeparator1, Me.CopyWHeaderToolStripMenuItem, Me.CopyNoHeaderToolStripMenuItem, Me.PasteCellStripMenu, Me.PasteMultipleStripMenu})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(218, 202)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(163, 142)
         '
         'FreezeToolStripMenu
         '
         Me.FreezeToolStripMenu.Name = "FreezeToolStripMenu"
-        Me.FreezeToolStripMenu.Size = New System.Drawing.Size(217, 32)
+        Me.FreezeToolStripMenu.Size = New System.Drawing.Size(162, 22)
         Me.FreezeToolStripMenu.Text = "Freeze"
         '
         'UnfreezeStripMenu
         '
         Me.UnfreezeStripMenu.Name = "UnfreezeStripMenu"
-        Me.UnfreezeStripMenu.Size = New System.Drawing.Size(217, 32)
+        Me.UnfreezeStripMenu.Size = New System.Drawing.Size(162, 22)
         Me.UnfreezeStripMenu.Text = "Unfreeze"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(214, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(159, 6)
         '
         'CopyWHeaderToolStripMenuItem
         '
         Me.CopyWHeaderToolStripMenuItem.Name = "CopyWHeaderToolStripMenuItem"
-        Me.CopyWHeaderToolStripMenuItem.Size = New System.Drawing.Size(217, 32)
+        Me.CopyWHeaderToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.CopyWHeaderToolStripMenuItem.Text = "Copy w/Header"
         '
         'CopyNoHeaderToolStripMenuItem
         '
         Me.CopyNoHeaderToolStripMenuItem.Name = "CopyNoHeaderToolStripMenuItem"
-        Me.CopyNoHeaderToolStripMenuItem.Size = New System.Drawing.Size(217, 32)
+        Me.CopyNoHeaderToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.CopyNoHeaderToolStripMenuItem.Text = "Copy No Header"
         '
         'PasteCellStripMenu
         '
         Me.PasteCellStripMenu.Name = "PasteCellStripMenu"
-        Me.PasteCellStripMenu.Size = New System.Drawing.Size(217, 32)
+        Me.PasteCellStripMenu.Size = New System.Drawing.Size(162, 22)
         Me.PasteCellStripMenu.Text = "Paste Cell"
         '
         'PasteMultipleStripMenu
         '
         Me.PasteMultipleStripMenu.Name = "PasteMultipleStripMenu"
-        Me.PasteMultipleStripMenu.Size = New System.Drawing.Size(217, 32)
+        Me.PasteMultipleStripMenu.Size = New System.Drawing.Size(162, 22)
         Me.PasteMultipleStripMenu.Text = "Paste Multiple"
         '
         'LoadData
         '
-        Me.LoadData.Location = New System.Drawing.Point(740, 28)
-        Me.LoadData.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.LoadData.Location = New System.Drawing.Point(493, 18)
         Me.LoadData.Name = "LoadData"
-        Me.LoadData.Size = New System.Drawing.Size(126, 42)
+        Me.LoadData.Size = New System.Drawing.Size(84, 27)
         Me.LoadData.TabIndex = 7
         Me.LoadData.Text = "Load Data"
         Me.LoadData.UseVisualStyleBackColor = True
@@ -200,19 +192,17 @@ Partial Class LiquidReceiptsMaint
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel1.Controls.Add(Me.rbTest)
         Me.Panel1.Controls.Add(Me.rbProduction)
-        Me.Panel1.Location = New System.Drawing.Point(1344, 14)
-        Me.Panel1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Panel1.Location = New System.Drawing.Point(896, 9)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(118, 65)
+        Me.Panel1.Size = New System.Drawing.Size(79, 43)
         Me.Panel1.TabIndex = 8
         '
         'rbTest
         '
         Me.rbTest.AutoSize = True
-        Me.rbTest.Location = New System.Drawing.Point(4, 35)
-        Me.rbTest.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.rbTest.Location = New System.Drawing.Point(3, 23)
         Me.rbTest.Name = "rbTest"
-        Me.rbTest.Size = New System.Drawing.Size(65, 24)
+        Me.rbTest.Size = New System.Drawing.Size(46, 17)
         Me.rbTest.TabIndex = 1
         Me.rbTest.TabStop = True
         Me.rbTest.Text = "Test"
@@ -221,10 +211,9 @@ Partial Class LiquidReceiptsMaint
         'rbProduction
         '
         Me.rbProduction.AutoSize = True
-        Me.rbProduction.Location = New System.Drawing.Point(4, 5)
-        Me.rbProduction.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.rbProduction.Location = New System.Drawing.Point(3, 3)
         Me.rbProduction.Name = "rbProduction"
-        Me.rbProduction.Size = New System.Drawing.Size(110, 24)
+        Me.rbProduction.Size = New System.Drawing.Size(76, 17)
         Me.rbProduction.TabIndex = 0
         Me.rbProduction.TabStop = True
         Me.rbProduction.Text = "Production"
@@ -235,19 +224,17 @@ Partial Class LiquidReceiptsMaint
         Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel2.Controls.Add(Me.rbSettle)
         Me.Panel2.Controls.Add(Me.rbReceive)
-        Me.Panel2.Location = New System.Drawing.Point(1204, 14)
-        Me.Panel2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Panel2.Location = New System.Drawing.Point(803, 9)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(130, 65)
+        Me.Panel2.Size = New System.Drawing.Size(87, 43)
         Me.Panel2.TabIndex = 9
         '
         'rbSettle
         '
         Me.rbSettle.AutoSize = True
-        Me.rbSettle.Location = New System.Drawing.Point(4, 35)
-        Me.rbSettle.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.rbSettle.Location = New System.Drawing.Point(3, 23)
         Me.rbSettle.Name = "rbSettle"
-        Me.rbSettle.Size = New System.Drawing.Size(76, 24)
+        Me.rbSettle.Size = New System.Drawing.Size(52, 17)
         Me.rbSettle.TabIndex = 1
         Me.rbSettle.TabStop = True
         Me.rbSettle.Text = "Settle"
@@ -256,10 +243,9 @@ Partial Class LiquidReceiptsMaint
         'rbReceive
         '
         Me.rbReceive.AutoSize = True
-        Me.rbReceive.Location = New System.Drawing.Point(4, 5)
-        Me.rbReceive.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.rbReceive.Location = New System.Drawing.Point(3, 3)
         Me.rbReceive.Name = "rbReceive"
-        Me.rbReceive.Size = New System.Drawing.Size(91, 24)
+        Me.rbReceive.Size = New System.Drawing.Size(65, 17)
         Me.rbReceive.TabIndex = 0
         Me.rbReceive.TabStop = True
         Me.rbReceive.Text = "Receive"
@@ -267,10 +253,9 @@ Partial Class LiquidReceiptsMaint
         '
         'CalcColumns
         '
-        Me.CalcColumns.Location = New System.Drawing.Point(987, 14)
-        Me.CalcColumns.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.CalcColumns.Location = New System.Drawing.Point(658, 9)
         Me.CalcColumns.Name = "CalcColumns"
-        Me.CalcColumns.Size = New System.Drawing.Size(123, 71)
+        Me.CalcColumns.Size = New System.Drawing.Size(82, 46)
         Me.CalcColumns.TabIndex = 15
         Me.CalcColumns.Text = "Calc Columns"
         Me.CalcColumns.UseVisualStyleBackColor = True
@@ -285,26 +270,29 @@ Partial Class LiquidReceiptsMaint
         Me.Panel3.Controls.Add(Me.Label4)
         Me.Panel3.Controls.Add(Me.Label3)
         Me.Panel3.Controls.Add(Me.Supplier)
-        Me.Panel3.Location = New System.Drawing.Point(6, 85)
+        Me.Panel3.Location = New System.Drawing.Point(11, 55)
+        Me.Panel3.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(1456, 76)
+        Me.Panel3.Size = New System.Drawing.Size(964, 50)
         Me.Panel3.TabIndex = 18
         '
         'CboRun
         '
         Me.CboRun.FormattingEnabled = True
-        Me.CboRun.Location = New System.Drawing.Point(1132, 22)
+        Me.CboRun.Location = New System.Drawing.Point(755, 14)
+        Me.CboRun.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.CboRun.Name = "CboRun"
-        Me.CboRun.Size = New System.Drawing.Size(85, 28)
+        Me.CboRun.Size = New System.Drawing.Size(58, 21)
         Me.CboRun.TabIndex = 24
         Me.CboRun.Visible = False
         '
         'LblRun
         '
         Me.LblRun.AutoSize = True
-        Me.LblRun.Location = New System.Drawing.Point(1088, 28)
+        Me.LblRun.Location = New System.Drawing.Point(725, 18)
+        Me.LblRun.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.LblRun.Name = "LblRun"
-        Me.LblRun.Size = New System.Drawing.Size(39, 20)
+        Me.LblRun.Size = New System.Drawing.Size(27, 13)
         Me.LblRun.TabIndex = 23
         Me.LblRun.Text = "Run"
         Me.LblRun.Visible = False
@@ -312,29 +300,26 @@ Partial Class LiquidReceiptsMaint
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(682, 28)
-        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Location = New System.Drawing.Point(455, 18)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(41, 20)
+        Me.Label5.Size = New System.Drawing.Size(27, 13)
         Me.Label5.TabIndex = 22
         Me.Label5.Text = "Item"
         '
         'Item
         '
         Me.Item.FormattingEnabled = True
-        Me.Item.Location = New System.Drawing.Point(732, 22)
-        Me.Item.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Item.Location = New System.Drawing.Point(488, 14)
         Me.Item.Name = "Item"
-        Me.Item.Size = New System.Drawing.Size(326, 28)
+        Me.Item.Size = New System.Drawing.Size(219, 21)
         Me.Item.TabIndex = 21
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(302, 28)
-        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Location = New System.Drawing.Point(201, 18)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(67, 20)
+        Me.Label4.Size = New System.Drawing.Size(45, 13)
         Me.Label4.TabIndex = 20
         Me.Label4.Text = "Supplier"
         '
@@ -342,27 +327,25 @@ Partial Class LiquidReceiptsMaint
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(184, 28)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label3.Location = New System.Drawing.Point(123, 18)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(79, 20)
+        Me.Label3.Size = New System.Drawing.Size(56, 13)
         Me.Label3.TabIndex = 19
         Me.Label3.Text = "Filtering:"
         '
         'Supplier
         '
         Me.Supplier.FormattingEnabled = True
-        Me.Supplier.Location = New System.Drawing.Point(380, 22)
-        Me.Supplier.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Supplier.Location = New System.Drawing.Point(253, 14)
         Me.Supplier.Name = "Supplier"
-        Me.Supplier.Size = New System.Drawing.Size(277, 28)
+        Me.Supplier.Size = New System.Drawing.Size(186, 21)
         Me.Supplier.TabIndex = 18
         '
         'LiquidReceiptsMaint
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1470, 794)
+        Me.ClientSize = New System.Drawing.Size(944, 501)
         Me.Controls.Add(Me.Grid)
         Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.CalcColumns)
@@ -376,7 +359,6 @@ Partial Class LiquidReceiptsMaint
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.RcptDateFrom)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "LiquidReceiptsMaint"
         Me.Text = "Liquid Receipts Maint"
         CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
@@ -397,7 +379,6 @@ Partial Class LiquidReceiptsMaint
     Friend WithEvents RcptDateTo As System.Windows.Forms.DateTimePicker
     Friend WithEvents strc As System.Windows.Forms.ComboBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Grid As System.Windows.Forms.DataGridView
     Friend WithEvents LoadData As System.Windows.Forms.Button
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents rbTest As System.Windows.Forms.RadioButton
@@ -422,4 +403,5 @@ Partial Class LiquidReceiptsMaint
     Friend WithEvents Label4 As Label
     Friend WithEvents Label3 As Label
     Friend WithEvents Supplier As ComboBox
+    Friend WithEvents Grid As DataGridView
 End Class

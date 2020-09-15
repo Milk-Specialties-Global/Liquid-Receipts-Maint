@@ -364,6 +364,7 @@
         LoadRcpts()
     End Sub
     Private Sub LoadData_Click(sender As System.Object, e As System.EventArgs) Handles LoadData.Click
+        SaveGridDisplay(Grid, rbSettle.Checked)  '09.15.20
         LoadRcpts()
     End Sub
     Private Sub Grid_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles Grid.DataError
@@ -578,10 +579,10 @@
                 My.Settings.RcptSortCol = GridIn.SortedColumn.Index
             End If
             If GridIn.SortOrder = 1 Then
-                    My.Settings.RcptSortDirection = 0
-                Else
-                    My.Settings.RcptSortDirection = 1
-                End If
+                My.Settings.RcptSortDirection = 0
+            Else
+                My.Settings.RcptSortDirection = 1
+            End If
             'End If
         End If
     End Sub
