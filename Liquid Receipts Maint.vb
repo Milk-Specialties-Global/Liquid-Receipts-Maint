@@ -9,6 +9,8 @@
     ' 07.27.20 5 new fields at the end (1 from field, 1 calc'd, 3 manual entry) KH
     ' 08.07.20 - on both sql strings, adjusted [ButterFat%] to draw from LIMSRSLT_LIQUID.[Monjonnier Fat Analysis for Liquids], added join KH
     ' 08.13.20 - added RunNo (similar to ML) because users can now hide columns and save in user settings 
+    ' 11.03.20 - changed butterfat from lims_liquid.[Mjonn...] to result.result where result.acode = 'fat_liq_asis'
+    ' 11.03.20 - also added SupWgt at end of fld list.
     ReadOnly ssett As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
@@ -16,11 +18,11 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", rsltLiq.[Monjonnier Fat Analysis for Liquids] as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo" &
+                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno and ras.acode='PROT_ASIS_LECO' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_LECO_LIQUID' and rdb.resultpart='mean_avg'" &
-                        " left outer join LIMSRSLT_LIQUID as rsltLiq on rsltLiq.sampno=m.sampno" &
+                        " left outer join result r on r.sampno=m.sampno and r.acode = 'fat_liq_asis'" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
     'added new codes for ML
     'note: difference in this sql is the joined value from ras.acode(s)
@@ -32,11 +34,11 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", rsltLiq.[Monjonnier Fat Analysis for Liquids] as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo" &
+                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno And ras.acode='PROT_ASIS_kjeldahl' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_kjeldahl' and rdb.resultpart='mean_avg'" &
-                        " left outer join LIMSRSLT_LIQUID as rsltLiq on rsltLiq.sampno=m.sampno" &
+                        " left outer join result r on r.sampno=m.sampno and r.acode = 'fat_liq_asis'" &
                         " where recdte between @datefrom and @dateto and strc = @strc"
     Private ReadOnly tbRcpt As New DataTable
     Private ReadOnly tbSett As New DataTable
@@ -274,6 +276,9 @@
             Grid.Columns("RunWO_Lot").ReadOnly = False
             Grid.Columns("WO_Prodname").ReadOnly = False
 
+            '11.04.20 new column as readonly = false
+            Grid.Columns("SupWgt").ReadOnly = False
+
             Grid.Columns("recno").Visible = False
 
             Grid.Columns("bolno").DefaultCellStyle.BackColor = Color.Yellow
@@ -295,6 +300,8 @@
             Grid.Columns("RunWO_Lot").DefaultCellStyle.BackColor = Color.LightSteelBlue
             Grid.Columns("WO_Prodname").DefaultCellStyle.BackColor = Color.LightSteelBlue
 
+            '11.04.20 format new column as backcolor = lightsteelblue KH
+            Grid.Columns("SupWgt").DefaultCellStyle.BackColor = Color.LightSteelBlue
         Else
             Grid.Columns("loadno").ReadOnly = False
             Grid.Columns("bolno").ReadOnly = False
@@ -392,13 +399,18 @@
             Exit Sub
         End If
 
-        Dim procname As String = If(rbProduction.Checked, "labworks.dbo.msgReceiptsCalc", "labworks_test.dbo.msgReceiptsCalc")
+        Dim procname As String = If(rbProduction.Checked, "labworks.dbo.msgReceiptsCalc_FILTER", "labworks_test.dbo.msgReceiptsCalc_FILTER")
         Dim rslt As Object
 
         Using lwconn As New SqlClient.SqlConnection(LWconnectString)
             Using cmd As New SqlClient.SqlCommand(procname, lwconn)
                 Me.Cursor = Cursors.WaitCursor
                 cmd.CommandType = CommandType.StoredProcedure
+                '11.03.20 3 new lines to set parameters
+                cmd.Parameters.AddWithValue("@dtStart", RcptDateFrom.Value.Date)
+                cmd.Parameters.AddWithValue("@dtEnd", RcptDateTo.Value.Date)
+                cmd.Parameters.AddWithValue("@strc", strc.Text)
+                '11.03.20 end new code
                 cmd.CommandTimeout = 0
                 lwconn.Open()
                 rslt = cmd.ExecuteScalar
@@ -411,7 +423,6 @@
 
         ' Calculation procedure completed, reload data
         LoadRcpts()
-
     End Sub
 
     ' Update Back-End Database
@@ -613,6 +624,55 @@
         'For ix As Int16 = 0 To GridIn.Columns.Count - 1
         'Console.WriteLine("col num: " & ix & " vis: " & arrVis(ix) & " width: " & arrWidth(ix) & " display index: " & arrDisplayIndex(ix))
         'Next
+
+        Console.WriteLine(My.Settings.SettColVisible & " count " & UBound(arrVis))
+        Console.WriteLine(My.Settings.SettColWidth & " count " & UBound(arrWidth))
+        Console.WriteLine(My.Settings.SettColDisplayIndex & " count " & UBound(arrDisplayIndex))
+
+
+        '11.03.20 - when a new column is added it causes problems w/ user settings (until they are updated)
+        'to manage, check ubound of an array against column count. If mis-match, Fix The Settings
+        Dim diffCt As Int16
+        Dim GridColCt As Int16
+        GridColCt = GridIn.Columns.Count - 1
+        diffCt = GridColCt - UBound(arrVis)
+        If UBound(arrVis) <> GridColCt Then
+            If (rbSettle.Checked) Then
+                Do Until diffCt = 0
+                    diffCt -= 1
+                    My.Settings.SettColVisible = My.Settings.SettColVisible & ",TRUE"
+                    My.Settings.SettColWidth = My.Settings.SettColWidth & ",66"
+                    My.Settings.SettColDisplayIndex = My.Settings.SettColDisplayIndex & "," & GridColCt + diffCt
+                Loop
+            Else
+                Do Until diffCt = 0
+                    diffCt -= 1
+                    My.Settings.RcptColVisible = My.Settings.RcptColVisible & ",TRUE"
+                    My.Settings.RcptColWidth = My.Settings.RcptColWidth & ",66"
+                    My.Settings.RcptColDisplayIndex = My.Settings.RcptColDisplayIndex & "," & GridColCt + diffCt
+                Loop
+            End If
+        End If
+
+        'now, re-split the arrays
+        'load arrays from csvs in usersettings
+        If rbSettle.Checked Then
+            If My.Settings.SettColVisible.Trim() = "" Then Exit Sub
+            arrVis = My.Settings.SettColVisible.Split(","c)
+            arrWidth = My.Settings.SettColWidth.Split(","c)
+            arrDisplayIndex = My.Settings.SettColDisplayIndex.Split(","c)
+        Else
+            If My.Settings.RcptColVisible.Trim() = "" Then Exit Sub
+            arrVis = My.Settings.RcptColVisible.Split(","c)
+            arrWidth = My.Settings.RcptColWidth.Split(","c)
+            arrDisplayIndex = My.Settings.RcptColDisplayIndex.Split(","c)
+        End If
+        'That should do it!
+        '11.03.20 done
+
+        Console.WriteLine(My.Settings.SettColVisible & " count " & UBound(arrVis))
+        Console.WriteLine(My.Settings.SettColWidth & " count " & UBound(arrWidth))
+        Console.WriteLine(My.Settings.SettColDisplayIndex & " count " & UBound(arrDisplayIndex))
 
         For i As Integer = 0 To GridIn.Columns.Count - 1
             GridIn.Columns(i).Visible = arrVis(i)
