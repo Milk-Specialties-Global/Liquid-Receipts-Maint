@@ -3,14 +3,17 @@
 
     ' Two different presentations for maintenance, but with the same selection criteria
     '08.12.20 add Trailer number (TrlrNo) to Receipts view.
+    '12.31.20 - added FarmWt in Receipt view
+    '01.13.21 - changed alias for FarmWt to VendorWt. Added GRN to Receipt
     ReadOnly srcpt As String = "select RecNo, Strc, RecTime, RecDte, SampNo, PDesc as ItemDesc, PNum as ItemNo, OrdNo, SupName, LoadNo, BolNo " &
-                        ", TruckWgt, LotNo, FreightCost, Carrier, TrlrNo from msgreceipts " &
+                        ", TruckWgt, LotNo, FreightCost, Carrier, TrlrNo, FarmWt as VendorWt, GRN from msgreceipts " &
                         "where recdte between @datefrom and @dateto and strc = @strc"
     ' 07.27.20 5 new fields at the end (1 from field, 1 calc'd, 3 manual entry) KH
     ' 08.07.20 - on both sql strings, adjusted [ButterFat%] to draw from LIMSRSLT_LIQUID.[Monjonnier Fat Analysis for Liquids], added join KH
     ' 08.13.20 - added RunNo (similar to ML) because users can now hide columns and save in user settings 
     ' 11.03.20 - changed butterfat from lims_liquid.[Mjonn...] to result.result where result.acode = 'fat_liq_asis'
     ' 11.03.20 - also added SupWgt at end of fld list.
+    ' 01.13.21 - added GRN to sset. 
     ReadOnly ssett As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
@@ -18,7 +21,7 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt" &
+                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt, GRN" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno and ras.acode='PROT_ASIS_LECO' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_LECO_LIQUID' and rdb.resultpart='mean_avg'" &
@@ -27,6 +30,7 @@
     'added new codes for ML
     'note: difference in this sql is the joined value from ras.acode(s)
     '07.27.20 5 new fields at the end (1 from field, 1 calc'd, 3 manual entry) KH
+    ' 01.13.21 - added GRN to sset. 
     ReadOnly ssettml As String = "select RecNo, SupName, PDesc as ItemDesc, LoadNo, m.SampNo, OrdNo, RecDte, BolNo " &
                         ", TruckWgt" &
                         ", lwsol as LabSol, SupSol, SettSol, [3pSol]" &
@@ -34,7 +38,7 @@
                         ", labworks.dbo.lwrslt(ras.result) as LabProtAsIs, SupProtAsIs, SettProtAsIs" &
                         ", labworks.dbo.lwrslt(rdb.result) as LabProtDB, SupProtDB, SettProtDB" &
                         ", SettPrice, SettValue" &
-                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt" &
+                        ", r.result as [Butterfat%], FatLbs as ButterfatLbs, RunWO_No, RunWO_Lot, WO_Prodname, RunNo, SupWgt, GRN" &
                         " from msgreceipts m" &
                         " left outer join result ras on ras.sampno=m.sampno And ras.acode='PROT_ASIS_kjeldahl' and ras.resultpart='mean_avg'" &
                         " left outer join result rdb on rdb.sampno=m.sampno and rdb.acode='PROT_DB_kjeldahl' and rdb.resultpart='mean_avg'" &
@@ -279,6 +283,9 @@
             '11.04.20 new column as readonly = false
             Grid.Columns("SupWgt").ReadOnly = False
 
+            '01.13.21 new column as readonly = false
+            Grid.Columns("GRN").ReadOnly = False
+
             Grid.Columns("recno").Visible = False
 
             Grid.Columns("bolno").DefaultCellStyle.BackColor = Color.Yellow
@@ -302,6 +309,9 @@
 
             '11.04.20 format new column as backcolor = lightsteelblue KH
             Grid.Columns("SupWgt").DefaultCellStyle.BackColor = Color.LightSteelBlue
+
+            '01.13.21 format new column as backcolor = Yello
+            Grid.Columns("GRN").DefaultCellStyle.BackColor = Color.Yellow
         Else
             Grid.Columns("loadno").ReadOnly = False
             Grid.Columns("bolno").ReadOnly = False
@@ -323,6 +333,16 @@
             '08.20.20 per Anne in FD, make Carrier & TrlrNo yellow 
             Grid.Columns("Carrier").DefaultCellStyle.BackColor = Color.Yellow
             Grid.Columns("TrlrNo").DefaultCellStyle.BackColor = Color.Yellow
+
+            '12.31.20 - new column (FarmWt). Make it editable & Yellow
+            '01.13.21 changed to VendorWt as that's its new alias
+            Grid.Columns("VendorWt").ReadOnly = False
+            Grid.Columns("VendorWt").DefaultCellStyle.BackColor = Color.Yellow
+
+            '01.13.21 new column as readonly = false & Yellow
+            Grid.Columns("GRN").ReadOnly = False
+            Grid.Columns("GRN").DefaultCellStyle.BackColor = Color.Yellow
+
         End If
 
         Grid.AutoResizeColumns()
@@ -642,14 +662,14 @@
                     diffCt -= 1
                     My.Settings.SettColVisible = My.Settings.SettColVisible & ",TRUE"
                     My.Settings.SettColWidth = My.Settings.SettColWidth & ",66"
-                    My.Settings.SettColDisplayIndex = My.Settings.SettColDisplayIndex & "," & GridColCt + diffCt
+                    My.Settings.SettColDisplayIndex = My.Settings.SettColDisplayIndex & "," & GridColCt - diffCt    '12.31.20 was + diffct, s/b -
                 Loop
             Else
                 Do Until diffCt = 0
                     diffCt -= 1
                     My.Settings.RcptColVisible = My.Settings.RcptColVisible & ",TRUE"
                     My.Settings.RcptColWidth = My.Settings.RcptColWidth & ",66"
-                    My.Settings.RcptColDisplayIndex = My.Settings.RcptColDisplayIndex & "," & GridColCt + diffCt
+                    My.Settings.RcptColDisplayIndex = My.Settings.RcptColDisplayIndex & "," & GridColCt - diffCt    '12.31.20 ditto
                 Loop
             End If
         End If
@@ -734,6 +754,10 @@
     End Sub
 
     Private Sub rbReceive_CheckedChanged(sender As Object, e As EventArgs) Handles rbReceive.CheckedChanged
+
+    End Sub
+
+    Private Sub Grid_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles Grid.CellContentClick
 
     End Sub
 End Class

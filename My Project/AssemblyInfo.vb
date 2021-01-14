@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Liquid Receipts Maint")> 
+<Assembly: AssemblyTitle("Liquid Receipts Maint")>
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Milk Specialties Global")> 
 <Assembly: AssemblyProduct("Liquid Receipts Maint")> 
